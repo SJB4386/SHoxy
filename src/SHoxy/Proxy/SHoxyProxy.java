@@ -1,16 +1,17 @@
 package SHoxy.Proxy;
 
-import java.util.ArrayList;
+import java.util.*;
 
 import SHoxy.Cache.*;
 
 public class SHoxyProxy {
+    private static final String CONFIG_FILE = "SHoxyProxy.config";
 
     public static void main(String[] args) {
-        ArrayList<CachedItem> cache = new ArrayList<CachedItem>();
+        Map<String, CachedItem> cache = new LinkedHashMap<String, CachedItem>();
         // cache doesn't need to be an ArrayList, but it will need to be passed in some way
         // to each thread
-        Thread listenerThread = new Thread(new TCPListener());
+        Thread listenerThread = new Thread(new TCPListener(3081, cache, "cache"));
         Thread updaterThread = new Thread(new CacheUpdater());
         Thread cleanerThread = new Thread(new CacheCleaner());
 
@@ -18,5 +19,4 @@ public class SHoxyProxy {
         updaterThread.start();
         cleanerThread.start();
     }
-
 }
