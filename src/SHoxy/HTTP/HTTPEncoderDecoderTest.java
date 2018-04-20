@@ -13,11 +13,19 @@ public class HTTPEncoderDecoderTest {
                                 "Connection: keep-alive\r\n" +
                                 "\r\n";
         byte[] rawInput = rawHttpData.getBytes();
+        String expectedMethod = "GET";
+        String expectedURI = "/index.html";
+        String expectedVersion = "HTTP/1.1";
         String expectedToString = "GET /index.html HTTP/1.1\r\n" +
                                      "Host: www.truman.edu\r\n" +
                                      "Connection: keep-alive\r\n";
         HTTPData actualOutput = HTTPEncoderDecoder.decodeRequest(rawInput);
 
+        assertTrue(actualOutput.isRequest);
+        assertFalse(actualOutput.isReply);
+        assertEquals(expectedMethod, actualOutput.method);
+        assertEquals(expectedURI, actualOutput.URI);
+        assertEquals(expectedVersion, actualOutput.version);
         assertEquals(expectedToString, actualOutput.toString());
     }
     
@@ -34,6 +42,9 @@ public class HTTPEncoderDecoderTest {
                                 "Upgrade-Insecure-Requests: 1\r\n" +
                                 "\r\n";
         byte[] rawInput = rawHttpData.getBytes();
+        String expectedMethod = "GET";
+        String expectedURI = "/";
+        String expectedVersion = "HTTP/1.1";
         String expectedToString = "GET / HTTP/1.1\r\n" +
                                      "Host: www.truman.edu\r\n" +
                                      "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0\r\n" +
@@ -45,6 +56,11 @@ public class HTTPEncoderDecoderTest {
                                      "Upgrade-Insecure-Requests: 1\r\n";
         HTTPData actualOutput = HTTPEncoderDecoder.decodeRequest(rawInput);
 
+        assertTrue(actualOutput.isRequest);
+        assertFalse(actualOutput.isReply);
+        assertEquals(expectedMethod, actualOutput.method);
+        assertEquals(expectedURI, actualOutput.URI);
+        assertEquals(expectedVersion, actualOutput.version);
         assertEquals(expectedToString, actualOutput.toString());
     }
 }
