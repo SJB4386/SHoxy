@@ -17,7 +17,7 @@ public class HTTPRequestHandler implements Runnable {
     @Override
     public void run() {
         try {
-            System.out.printf("Client connected on port: %d", clientSocket.getPort());
+            System.out.printf("Client connected on port: %d\n", clientSocket.getPort());
             replyStream = clientSocket.getOutputStream();
             replyStream.write("HTTP/1.1 501 Not Implemented\r\n\r\n".getBytes());
             replyStream.close();

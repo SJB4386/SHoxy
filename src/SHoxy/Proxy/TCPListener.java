@@ -29,6 +29,7 @@ public class TCPListener implements Runnable {
     public void run() {
         try {
             serverSocket = new ServerSocket(listeningPort);
+            System.out.printf("Server now listening on port: %d\n", listeningPort);
             while (true) {
                 clientSocket = serverSocket.accept();
                 new Thread(new HTTPRequestHandler(clientSocket, cache, cacheDirectory)).start();
