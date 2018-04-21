@@ -45,9 +45,9 @@ public class HTTPData {
                     .getBytes();
             constructedPacket = combineByteArrays(constructedPacket, currentHeaderAttr);
         }
+        constructedPacket = combineByteArrays(constructedPacket, "\r\n".getBytes());
         if (body != null)
             constructedPacket = combineByteArrays(constructedPacket, body);
-        constructedPacket = combineByteArrays(constructedPacket, "\r\n".getBytes());
 
         return constructedPacket;
     }

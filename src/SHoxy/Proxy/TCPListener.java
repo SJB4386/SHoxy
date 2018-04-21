@@ -32,10 +32,12 @@ public class TCPListener implements Runnable {
             System.out.printf("Server now listening on port: %d\n", listeningPort);
             while (true) {
                 clientSocket = serverSocket.accept();
-                new Thread(new HTTPRequestHandler(clientSocket, cache, cacheDirectory)).start();
+                new Thread(new HTTPRequestHandler(clientSocket, cache, cacheDirectory))
+                        .start();
             }
         } catch (IOException e) {
-            throw new RuntimeException(String.format("Error creating socket on port %d", listeningPort));
+            throw new RuntimeException(
+                    String.format("Error creating socket on port %d", listeningPort));
         }
     }
 
