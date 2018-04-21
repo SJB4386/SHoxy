@@ -117,4 +117,62 @@ public class HTTPEncoderDecoderTest {
         assertEquals(expectedStatusCode, actualOutput.statusCode);
         assertEquals(expectedToString, actualOutput.toString());
     }
+
+    @Test
+    public void testDecodeReplyOK() {
+        String rawHttpData = "HTTP/1.1 200 OK\r\n"
+                + "Date: Fri, 20 Apr 2018 23:24:04 GMT\r\n"
+                + "Server: Apache/2.4.10 (Raspbian)\r\n"
+                + "Last-Modified: Fri, 20 Apr 2018 23:22:40 GMT\r\n"
+                + "ETag: \"71-56a4ff6e72461-gzip\"\r\n"
+                + "Accept-Ranges: bytes\r\n"
+                + "Vary: Accept-Encoding\r\n"
+                + "Content-Encoding: gzip\r\n"
+                + "Content-Length: 89\r\n"
+                + "Keep-Alive: timeout=5, max=100\r\n"
+                + "Connection: Keep-Alive\r\n"
+                + "Content-Type: text/html\r\n"
+                + "\r\n"
+                + "<!DOCTYPE html>\n"
+                + "<html>\n"
+                + "<head>\n"
+                + "<title>Hello, world!</title>\n"
+                + "</head>\n"
+                + "<body>\n"
+                + "<h1>Hello, world!</h1>\n"
+                + "</body>\n"
+                + "</html>\n";
+        byte[] rawInput = rawHttpData.getBytes();
+        String expectedProtocol = "HTTP/1.1";
+        String expectedStatusCode = "200 OK\r\n";
+        String expectedToString = "HTTP/1.1 200 OK\r\n"
+                + "Date: Fri, 20 Apr 2018 23:24:04 GMT\r\n"
+                + "Server: Apache/2.4.10 (Raspbian)\r\n"
+                + "Last-Modified: Fri, 20 Apr 2018 23:22:40 GMT\r\n"
+                + "ETag: \"71-56a4ff6e72461-gzip\"\r\n"
+                + "Accept-Ranges: bytes\r\n"
+                + "Vary: Accept-Encoding\r\n"
+                + "Content-Encoding: gzip\r\n"
+                + "Content-Length: 89\r\n"
+                + "Keep-Alive: timeout=5, max=100\r\n"
+                + "Connection: Keep-Alive\r\n"
+                + "Content-Type: text/html\r\n"
+                + "\r\n"
+                + "<!DOCTYPE html>\n"
+                + "<html>\n"
+                + "<head>\n"
+                + "<title>Hello, world!</title>\n"
+                + "</head>\n"
+                + "<body>\n"
+                + "<h1>Hello, world!</h1>\n"
+                + "</body>\n"
+                + "</html>\n";
+        HTTPData actualOutput = HTTPEncoderDecoder.decodeMessage(rawInput);
+
+        assertFalse(actualOutput.isRequest);
+        assertTrue(actualOutput.isReply);
+        assertEquals(expectedProtocol, actualOutput.protocol);
+        assertEquals(expectedStatusCode, actualOutput.statusCode);
+        assertEquals(expectedToString, actualOutput.toString());
+    }
 }

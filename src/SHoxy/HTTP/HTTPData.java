@@ -30,20 +30,21 @@ public class HTTPData {
      * @return A properly formatted HTTP packet ready for transport
      */
     public byte[] constructPacket() {
+
         return null;
     }
 
     @Override
     public String toString() {
         String http = "";
-        if(isRequest)
+        if (isRequest)
             http += String.format("%s %s %s", method, URI, version);
-        else if(isReply)
+        else if (isReply)
             http += String.format("%s %s", protocol, statusCode);
         for (Entry<String, String> headerLine : headerLines.entrySet())
             http += String.format("%s %s", headerLine.getKey(), headerLine.getValue());
         http += "\r\n";
-        if(body != null)
+        if (body != null)
             http += new String(body, StandardCharsets.UTF_8);
         return http;
     }

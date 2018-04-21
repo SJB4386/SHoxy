@@ -65,11 +65,8 @@ public class HTTPEncoderDecoder {
             }
             currStartIndex = currEndIndex;
         }
-        if (decodedData.headerLines.containsKey("Content-Length:")) {
-            decodedData.body = Arrays.copyOfRange(encodedData, currStartIndex,
-                    currEndIndex + Integer
-                            .parseInt(decodedData.headerLines.get("Content-Length:").replaceAll("\r\n", "")));
-        }
+        if (decodedData.headerLines.containsKey("Content-Length:"))
+            decodedData.body = Arrays.copyOfRange(encodedData, currStartIndex, encodedData.length);
 
         return decodedData;
     }
