@@ -7,7 +7,7 @@ import java.util.Map;
 import SHoxy.Cache.CachedItem;
 import SHoxy.HTTP.HTTPData;
 import SHoxy.HTTP.HTTPEncoderDecoder;
-import SHoxy.Util.DocRetriever;
+import SHoxy.Util.SHoxyUtils;
 
 public class HTTPRequestHandler implements Runnable {
     private final static String ERROR_501_FILENAME = "HTTPErrorDocs/501.html";
@@ -30,7 +30,7 @@ public class HTTPRequestHandler implements Runnable {
         HTTPData clientRequest;
 
         try {
-            System.out.printf("Client connected on port: %d\n", clientSocket.getPort());
+            SHoxyUtils.logMessage(String.format("Client connected on port: %d", clientSocket.getPort()));
 
             requestStream = clientSocket.getInputStream();
             replyStream = clientSocket.getOutputStream();
@@ -39,10 +39,14 @@ public class HTTPRequestHandler implements Runnable {
                 rawRequest = new byte[requestSize];
                 System.arraycopy(requestBuffer, 0, rawRequest, 0, requestSize);
                 clientRequest = HTTPEncoderDecoder.decodeMessage(rawRequest);
-                System.out.println(clientRequest.toString());
+                if(clientRequest.method.equals("GET")) {
+                    SHoxyUtils.logMessage(String.format("Client requests %s", clientRequest.URI));
+                    replyStream.write(get501Packet());
+                }
+                else
+                    replyStream.write(get501Packet());
             }
 
-            replyStream.write(get501Packet());
             requestStream.close();
             replyStream.close();
         } catch (IOException e) {
@@ -60,7 +64,7 @@ public class HTTPRequestHandler implements Runnable {
         error501.isReply = true;
         error501.protocol = SHoxyProxy.HTTP_VERSION;
         error501.statusCode = "501 Not Implemented\r\n";
-        error501.body = DocRetriever.retrieveDocument(ERROR_501_FILENAME);
+        error501.body = SHoxyUtils.retrieveDocument(ERROR_501_FILENAME);
         error501.headerLines.put("Content-Length:",
                 String.format("%d\r\n", error501.body.length));
 

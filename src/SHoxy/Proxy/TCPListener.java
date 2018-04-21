@@ -5,6 +5,7 @@ import java.net.*;
 import java.util.Map;
 
 import SHoxy.Cache.CachedItem;
+import SHoxy.Util.SHoxyUtils;
 
 public class TCPListener implements Runnable {
     private int listeningPort;
@@ -29,7 +30,7 @@ public class TCPListener implements Runnable {
     public void run() {
         try {
             serverSocket = new ServerSocket(listeningPort);
-            System.out.printf("Server now listening on port: %d\n", listeningPort);
+            SHoxyUtils.logMessage(String.format("Server now listening on port: %d", listeningPort));
             while (true) {
                 clientSocket = serverSocket.accept();
                 new Thread(new HTTPRequestHandler(clientSocket, cache, cacheDirectory))
