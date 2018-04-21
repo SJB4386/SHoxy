@@ -12,11 +12,11 @@ public class HTTPEncoderDecoder {
     }
 
     /**
-     * Decodes an HTTP Request message into HTTPData
+     * Decodes an HTTP message into HTTPData
      * @param encodedData The raw HTTP data
      * @return an HTTPData object containing the data that was encodes in the input
      */
-    public static HTTPData decodeRequest(byte[] encodedData) {
+    public static HTTPData decodeMessage(byte[] encodedData) {
         HTTPData decodedData = new HTTPData();
         boolean carriageReturnFound = false;
         boolean newLineFound = false;
@@ -65,6 +65,12 @@ public class HTTPEncoderDecoder {
             }
             currStartIndex = currEndIndex;
         }
+        if (decodedData.headerLines.containsKey("Content-Length:")) {
+            decodedData.body = Arrays.copyOfRange(encodedData, currStartIndex,
+                    currEndIndex + Integer
+                            .parseInt(decodedData.headerLines.get("Content-Length:").replaceAll("\r\n", "")));
+        }
+
         return decodedData;
     }
 }
