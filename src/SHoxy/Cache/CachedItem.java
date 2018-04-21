@@ -1,14 +1,11 @@
 package SHoxy.Cache;
 
-import java.util.ArrayList;
 import java.util.Date;
 
-
-
 public class CachedItem {
-    private String URL;
-    private Date lastModified;
-    private Date lastTimeRequested;
+    public String URL;
+    public Date lastModified;
+    public Date lastTimeRequested;
 
     /**
      * Parses URL into the filename that is used for storage of the CachedItem
