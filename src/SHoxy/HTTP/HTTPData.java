@@ -30,8 +30,38 @@ public class HTTPData {
      * @return A properly formatted HTTP packet ready for transport
      */
     public byte[] constructPacket() {
+        byte[] constructedPacket;
+        byte[] currentHeaderAttr;
 
-        return null;
+        String reqReplyLine = "";
+        if (isRequest)
+            reqReplyLine = String.format("%s %s %s", method, URI, version);
+        else if (isReply)
+            reqReplyLine = String.format("%s %s", protocol, statusCode);
+        constructedPacket = reqReplyLine.getBytes();
+        for (Entry<String, String> headerLine : headerLines.entrySet()) {
+            currentHeaderAttr = String
+                    .format("%s %s", headerLine.getKey(), headerLine.getValue())
+                    .getBytes();
+            constructedPacket = combineByteArrays(constructedPacket, currentHeaderAttr);
+        }
+        if (body != null)
+            constructedPacket = combineByteArrays(constructedPacket, body);
+        constructedPacket = combineByteArrays(constructedPacket, "\r\n".getBytes());
+
+        return constructedPacket;
+    }
+
+    /**
+     * Method found here:
+     * https://stackoverflow.com/questions/5683486/how-to-combine-two-byte-arrays
+     */
+    public static byte[] combineByteArrays(byte[] a, byte[] b) {
+        byte[] combined = new byte[a.length + b.length];
+
+        System.arraycopy(a, 0, combined, 0, a.length);
+        System.arraycopy(b, 0, combined, a.length, b.length);
+        return combined;
     }
 
     @Override

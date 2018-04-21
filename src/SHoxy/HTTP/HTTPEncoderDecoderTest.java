@@ -175,4 +175,38 @@ public class HTTPEncoderDecoderTest {
         assertEquals(expectedStatusCode, actualOutput.statusCode);
         assertEquals(expectedToString, actualOutput.toString());
     }
+
+    @Test
+    public void testDecodeRequestProxy() {
+        String rawHttpData = "GET http://linuxtycoon.com/ HTTP/1.1\r\n"
+                + "Host: linuxtycoon.com\r\n"
+                + "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0\r\n"
+                + "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n"
+                + "Accept-Language: en-US,en;q=0.5\r\n"
+                + "Accept-Encoding: gzip, deflate\r\n"
+                + "Connection: keep-alive\r\n"
+                + "Upgrade-Insecure-Requests: 1\r\n"
+                + "\r\n";
+        byte[] rawInput = rawHttpData.getBytes();
+        String expectedMethod = "GET";
+        String expectedURI = "http://linuxtycoon.com/";
+        String expectedVersion = "HTTP/1.1\r\n";
+        String expectedToString = "GET http://linuxtycoon.com/ HTTP/1.1\r\n"
+                + "Host: linuxtycoon.com\r\n"
+                + "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0\r\n"
+                + "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n"
+                + "Accept-Language: en-US,en;q=0.5\r\n"
+                + "Accept-Encoding: gzip, deflate\r\n"
+                + "Connection: keep-alive\r\n"
+                + "Upgrade-Insecure-Requests: 1\r\n"
+                + "\r\n";
+        HTTPData actualOutput = HTTPEncoderDecoder.decodeMessage(rawInput);
+
+        assertTrue(actualOutput.isRequest);
+        assertFalse(actualOutput.isReply);
+        assertEquals(expectedMethod, actualOutput.method);
+        assertEquals(expectedURI, actualOutput.URI);
+        assertEquals(expectedVersion, actualOutput.version);
+        assertEquals(expectedToString, actualOutput.toString());
+    }
 }
