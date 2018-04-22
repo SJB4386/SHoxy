@@ -26,18 +26,14 @@ public class CacheCleaner implements Runnable {
     }
     
     private void scheduleClean() {
-        Thread thread = new Thread(){
-            public void run(){
-                try {
-                    sleep(rand.nextInt(30) * 1000);
-                    cleanOldEntries();
-                    scheduleClean();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        try {
+            while (true) {
+                Thread.sleep(rand.nextInt(30) * 1000);
+                cleanOldEntries();
             }
-          };
-          thread.start();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
     
     
