@@ -29,7 +29,7 @@ public class CachedItem {
     	 	
 
     	
-    	ArrayList <String> forwardSlashParts = new ArrayList();
+    	ArrayList <String> forwardSlashParts = new ArrayList<String>();
     			
     	try {
     		for (String URLPart: URLParts[1].split(FORWARD_SLASH_DELIM)) {
