@@ -66,11 +66,15 @@ public class CacheUpdater implements Runnable {
         
         if (lock.tryLock()) {
             try {
-                destination = new URL(item.URL);
+                String url = item.URL;
+                if (!url.matches("^http://.*"))
+                    url = String.format("http://%s", url);
+                destination = new URL(url);
                 connection = (HttpURLConnection) destination.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setIfModifiedSince(item.lastModified.getTime());
                 responseCode = connection.getResponseCode();
+                
                 
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     response = new HTTPData();
