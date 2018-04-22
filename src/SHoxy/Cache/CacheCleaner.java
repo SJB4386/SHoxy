@@ -3,6 +3,7 @@ package SHoxy.Cache;
 import java.io.File;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.locks.Lock;
@@ -28,7 +29,7 @@ public class CacheCleaner implements Runnable {
     private void scheduleClean() {
         try {
             while (true) {
-                Thread.sleep(rand.nextInt(30) * 1000);
+                Thread.sleep(rand.nextInt(30) * milliseconds);
                 cleanOldEntries();
             }
         } catch (InterruptedException e) {
@@ -39,7 +40,8 @@ public class CacheCleaner implements Runnable {
     
     private void cleanOldEntries() {
         Collection<CachedItem> entries = cache.values();
-        for (CachedItem item : entries) {
+        for (Iterator<CachedItem> iterator = entries.iterator(); iterator.hasNext();) {
+            CachedItem item = iterator.next();
             if (isTooOld(item)) {
                 removeFromCache(item);
             }
