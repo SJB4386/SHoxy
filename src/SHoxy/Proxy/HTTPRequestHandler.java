@@ -15,6 +15,8 @@ import SHoxy.Util.SHoxyUtils;
 public class HTTPRequestHandler implements Runnable {
     private final static String ERROR_501_FILENAME = "HTTPErrorDocs/501.html";
     private final static int REQUEST_BUFFER_SIZE = 800;
+    private final static int HTTP_READ_TIMEOUT = 5000;
+    private final static int HTTP_CONNECT_TIMEOUT = 5000;
 
     private Socket clientSocket;
     private Map<String, CachedItem> cache;
@@ -140,6 +142,8 @@ public class HTTPRequestHandler implements Runnable {
         try {
             destination = new URL(url);
             connection = (HttpURLConnection) destination.openConnection();
+            connection.setConnectTimeout(HTTP_CONNECT_TIMEOUT);
+            connection.setReadTimeout(HTTP_READ_TIMEOUT);
             connection.setRequestMethod("GET");
             urlCacheKey = url.replace("http://", "").replace("www.", "");
             if (cache.containsKey(urlCacheKey)) {
@@ -172,6 +176,10 @@ public class HTTPRequestHandler implements Runnable {
             }
         } catch (MalformedURLException e) {
             SHoxyUtils.logMessage(String.format("URL: %s not formatted properly", url));
+        } catch (SocketTimeoutException e) {
+            SHoxyUtils.logMessage(String.format("Connection timeout to %s", url));
+            response = new HTTPData();
+            response.responseCode = 408;
         } catch (IOException e) {
             SHoxyUtils.logMessage(String.format("Couldn't reach url %s", url));
         } finally {
