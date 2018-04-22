@@ -12,6 +12,7 @@ public class CachedItemTest {
 		
 		assertEquals(expectedFilePath, CachedItem.parseURLToFileName(testURL));
 	}
+
 	
 	@Test
 	public void noForwardSlash() {
@@ -20,4 +21,6 @@ public class CachedItemTest {
 		
 		assertEquals(expectedFilePath, CachedItem.parseURLToFileName(testURL));
 	}
+
+
 }
