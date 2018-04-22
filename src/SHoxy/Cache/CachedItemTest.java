@@ -12,4 +12,12 @@ public class CachedItemTest {
 		
 		assertEquals(expectedFilePath, CachedItem.parseURLToFileName(testURL));
 	}
+
+    @Test
+    public void testPArseURLToFilenameNoFile() {
+        String testURL = "http://www.borax.truman.edu";
+        String expectedFilePath = "/edu/truman/borax/index.html";
+
+        assertEquals(expectedFilePath, CachedItem.parseURLToFileName(testURL));
+    }
 }

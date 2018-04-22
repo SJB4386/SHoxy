@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class CachedItem {
+    private static String FILENAME_END_IN_FILE_REGEX = ".*\\/.*\\..+$";
+
     public String URL;
     public Date lastModified;
     public Date lastTimeRequested;
