@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import SHoxy.HTTP.HTTPData;
+
 public class HTTPRequestHandlerTest {
 
     @Test
@@ -26,4 +28,19 @@ public class HTTPRequestHandlerTest {
         assertEquals(new String(expected501Packet), new String(actual501Packet));
     }
 
+    @Test
+    public void testForwardGETRequest() {
+        HTTPRequestHandler handler = new HTTPRequestHandler(null, null, null);
+        HTTPData testHTTP = handler.forwardGETRequest("http://truman.edu");
+
+        assertTrue(testHTTP != null);
+    }
+
+    @Test
+    public void testForwardGETRequestNoHttp() {
+        HTTPRequestHandler handler = new HTTPRequestHandler(null, null, null);
+        HTTPData testHTTP = handler.forwardGETRequest("truman.edu");
+
+        assertTrue(testHTTP != null);
+    }
 }

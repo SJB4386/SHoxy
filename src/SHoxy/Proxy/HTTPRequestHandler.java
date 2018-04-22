@@ -70,4 +70,66 @@ public class HTTPRequestHandler implements Runnable {
 
         return error501.constructPacket();
     }
+
+    /**
+     * Creates a HTTP packet from a specified document
+     * @param filename the name of the file stored on disk
+     * @return a packet ready for transport
+     */
+    public byte[] create200PacketFromDoc(String filename) {
+        HTTPData docHTTP = new HTTPData();
+
+        docHTTP.isReply = true;
+        docHTTP.protocol = SHoxyProxy.HTTP_VERSION;
+        docHTTP.statusCode = "200 OK\r\n";
+        docHTTP.body = SHoxyUtils.retrieveDocument(filename);
+        docHTTP.headerLines.put("Content-Length:", String.format("%d\r\n", docHTTP.body.length));
+
+        return docHTTP.constructPacket();
+    }
+
+    /**
+     * Forwards a GET request to a given url
+     * @param url the url the request is to be sent to
+     * @return the response gotten from the GET request as HTTPData
+     */
+    public HTTPData forwardGETRequest(String url) {
+        URL destination;
+        HttpURLConnection connection = null;
+        BufferedReader responseBuffer;
+        StringBuffer rawResponse;
+        String responseLine;
+        int responseCode;
+        HTTPData response = null;
+
+        if (!url.matches("^http://.*"))
+            url = String.format("http://%s", url);
+        try {
+            destination = new URL(url);
+            connection = (HttpURLConnection) destination.openConnection();
+            connection.setRequestMethod("GET");
+            responseCode = connection.getResponseCode();
+            if (responseCode == 200) {
+                response = new HTTPData();
+                response.isReply = true;
+                response.protocol = SHoxyProxy.HTTP_VERSION;
+                response.statusCode = "200 OK\r\n";
+                responseBuffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                rawResponse = new StringBuffer();
+                while ((responseLine = responseBuffer.readLine()) != null)
+                    rawResponse.append(responseLine + "\n");
+                responseBuffer.close();
+                response.body = rawResponse.toString().getBytes();
+                response.headerLines.put("Content-Length:", String.format("%d\r\n", response.body.length));
+            }
+        } catch (MalformedURLException e) {
+            SHoxyUtils.logMessage(String.format("URL: %s not formatted properly", url));
+        } catch (IOException e) {
+            SHoxyUtils.logMessage(String.format("Couldn't reach url %s", url));
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+        }
+        return response;
+    }
 }
