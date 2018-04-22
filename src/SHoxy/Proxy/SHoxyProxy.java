@@ -39,11 +39,23 @@ public class SHoxyProxy {
                     if (line.startsWith(configValues[i])) {
                         String lineValue = line.substring(configValues[i].length()).trim();
                         if (i == 0) {
-                            listenerPort = Integer.parseInt(lineValue);
+                            try {
+                                listenerPort = Integer.parseInt(lineValue);
+                            } catch (NumberFormatException e) {
+                                SHoxyUtils.logMessage(String.format("%s cannot be a port number.", lineValue));
+                            }
                         } else if (i == 1) {
-                            updateTimerSeconds = Integer.parseInt(lineValue);
+                            try {
+                                updateTimerSeconds = Integer.parseInt(lineValue);
+                            } catch (NumberFormatException e) {
+                                SHoxyUtils.logMessage("Update timer must be a value in seconds.");
+                            }
                         } else if (i == 2) {
-                            deleteTimerSeconds = Integer.parseInt(lineValue);
+                            try {
+                                deleteTimerSeconds = Integer.parseInt(lineValue);
+                            } catch (NumberFormatException e) {
+                                SHoxyUtils.logMessage("Delete timer must be a value in seconds.");
+                            }
                         } else if (i == 3) {
                             cacheDirectory = lineValue;
                         }
