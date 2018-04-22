@@ -43,13 +43,9 @@ public class SHoxyUtils {
     /**
      * Stores a file based on the uri it was retrieved from
      * @param httpResponseBody the body of the http received
-     * @param uri the uri the body was retrieved from
-     * @param rootDirectory the root directory for a files written
+     * @param bodyFilename the file the body will be stored under
      */
-    public static void writeFile(byte[] httpResponseBody, String uri, String rootDirectory) {
-        String bodyFilename = String.format("%s%s", rootDirectory, CachedItem.parseURLToFileName(uri));
-        if (!bodyFilename.matches(FILENAME_END_IN_FILE_REGEX))
-            bodyFilename = String.format("%sdefault.html", bodyFilename);
+    public static void writeFile(byte[] httpResponseBody, String bodyFilename) {
         FileOutputStream outStream;
         try {
             File bodyDirectory = Paths.get(bodyFilename).getParent().toFile();

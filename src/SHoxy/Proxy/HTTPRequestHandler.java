@@ -205,7 +205,7 @@ public class HTTPRequestHandler implements Runnable {
                         cache.get(cacheKey).lastModified = new Date(lastModifed);
                     else
                         cache.get(cacheKey).lastModified = new Date();
-                    SHoxyUtils.writeFile(data, cacheKey, cacheDirectory);
+                    SHoxyUtils.writeFile(data, cachedDocFilename);
                 }
             } else {
                 synchronized (cache.get(cacheKey)) {
@@ -214,7 +214,7 @@ public class HTTPRequestHandler implements Runnable {
                         cache.get(cacheKey).lastModified = new Date(lastModifed);
                     else
                         cache.get(cacheKey).lastModified = new Date();
-                    SHoxyUtils.writeFile(data, cacheKey, cacheDirectory);
+                    SHoxyUtils.writeFile(data, cachedDocFilename);
                 }
             }
         } catch (InvalidPathException e) {

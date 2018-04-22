@@ -11,7 +11,7 @@ public class SHoxyUtilsTest {
         String url = "truman.edu";
         byte[] data = "Hello, world!".getBytes();
 
-        SHoxyUtils.writeFile(data, url, "test");
+        SHoxyUtils.writeFile(data, "test/hello.txt");
     }
 
 }
