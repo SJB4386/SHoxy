@@ -32,14 +32,14 @@ public class CacheUpdater implements Runnable {
     }
 
     private void scheduleCacheUpdate() {
-        try {
-            while (true) {
+        while (true) {
+            try {
                 Thread.sleep(updateTimerSeconds * milliseconds);
-                updateCache();
-                scheduleCacheUpdate();
+            } catch (InterruptedException e) {
+                SHoxyUtils.logMessage("CacheUpdater interrupted");
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            updateCache();
+            scheduleCacheUpdate();
         }
     }
 

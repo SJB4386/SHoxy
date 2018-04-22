@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.locks.Lock;
 
+import SHoxy.Util.SHoxyUtils;
+
 public class CacheCleaner implements Runnable {
     
     private Map<String, CachedItem> cache;
@@ -28,18 +30,16 @@ public class CacheCleaner implements Runnable {
     }
     
     private void scheduleClean() {
-        try {
-            while (true) {
+        while (true) {
+            try {
                 Thread.sleep(rand.nextInt(30) * milliseconds);
-                cleanOldEntries();
-                scheduleClean();
+            } catch (InterruptedException e) {
+                SHoxyUtils.logMessage("CacheCleaner interrupted");
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            cleanOldEntries();
+            scheduleClean();
         }
-        
     }
-    
     
     private void cleanOldEntries() {
         Collection<CachedItem> entries = cache.values();
@@ -82,11 +82,10 @@ public class CacheCleaner implements Runnable {
 
     private void deleteFile(String filename) {
         File file = new File(filename);
-        
-        if(file.delete()) {
-            System.out.println("Deleted file at " + filename);
-        } else {
-            System.out.println("Failed to delete the file");
-        }
+
+        if (file.delete())
+            SHoxyUtils.logMessage(String.format("Deleted file at %s", filename));
+        else
+            SHoxyUtils.logMessage("Failed to delete the file");
     }
 }
