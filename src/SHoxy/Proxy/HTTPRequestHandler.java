@@ -2,9 +2,7 @@ package SHoxy.Proxy;
 
 import java.io.*;
 import java.net.*;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import SHoxy.Cache.CachedItem;
 import SHoxy.HTTP.HTTPData;
@@ -109,12 +107,6 @@ public class HTTPRequestHandler implements Runnable {
         int responseCode;
         HTTPData response = null;
 
-        Map<String, List<String>> headers;
-        Set<Map.Entry<String, List<String>>> entrySet;
-        String headerName;
-        List<String> headerValues;
-        String headerValue;
-
         if (!url.matches("^http://.*"))
             url = String.format("http://%s", url);
         try {
@@ -127,26 +119,13 @@ public class HTTPRequestHandler implements Runnable {
                 response.isReply = true;
                 response.protocol = SHoxyProxy.HTTP_VERSION;
                 response.statusCode = "200 OK\r\n";
-                headers = connection.getHeaderFields();
-                entrySet = headers.entrySet();
-                for (Map.Entry<String, List<String>> entry : entrySet) {
-                    headerName = entry.getKey();
-                    if (headerName != null) {
-                        headerValues = entry.getValue();
-                        headerValue = "";
-                        for (String value : headerValues)
-                            headerValue += value;
-                        response.headerLines.put(String.format("%s:", headerName),
-                                String.format("%s\r\n", headerValue));
-                    }
-                }
-                responseBuffer = new BufferedReader(
-                        new InputStreamReader(connection.getInputStream()));
+                responseBuffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 rawResponse = new StringBuffer();
                 while ((responseLine = responseBuffer.readLine()) != null)
                     rawResponse.append(responseLine + "\n");
                 responseBuffer.close();
                 response.body = rawResponse.toString().getBytes();
+                response.headerLines.put("Content-Length:", String.format("%d\r\n", response.body.length));
             }
         } catch (MalformedURLException e) {
             SHoxyUtils.logMessage(String.format("URL: %s not formatted properly", url));
