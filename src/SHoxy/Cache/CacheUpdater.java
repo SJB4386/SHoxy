@@ -87,7 +87,7 @@ public class CacheUpdater implements Runnable {
                     response.body = rawResponse.toString().getBytes();
                     response.headerLines.put("Content-Length:", String.format("%d\r\n", response.body.length));
                     
-                    SHoxyUtils.writeFile(response.body, CachedItem.parseURLToFileName(item.URL);
+                    SHoxyUtils.writeFile(response.body, CachedItem.parseURLToFileName(item.URL));
                 }
                 // if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) or anything else, do nothing
             } catch (MalformedURLException e) {
