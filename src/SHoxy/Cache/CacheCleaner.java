@@ -27,12 +27,14 @@ public class CacheCleaner implements Runnable {
         scheduleClean();
     }
     
+    /**
+     * At random intervals, check the cache and remove entries older than the delete timer interval.
+     */
     private void scheduleClean() {
         try {
             while (true) {
                 Thread.sleep(rand.nextInt(30) * milliseconds);
                 cleanOldEntries();
-                scheduleClean();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -41,6 +43,9 @@ public class CacheCleaner implements Runnable {
     }
     
     
+    /**
+     * Remove items from the cache that are past their specified expiration time.
+     */
     private void cleanOldEntries() {
         Collection<CachedItem> entries = cache.values();
         for (Iterator<CachedItem> iterator = entries.iterator(); iterator.hasNext();) {
@@ -51,6 +56,11 @@ public class CacheCleaner implements Runnable {
         }
     }
     
+    
+    /**
+     * @param item the item to check
+     * @return whether the item is older than the value in deleteTimerSeconds
+     */
     private boolean isTooOld(CachedItem item) {
         boolean result = false;
 
@@ -66,6 +76,10 @@ public class CacheCleaner implements Runnable {
         return result;
     }
 
+    /**
+     * remove the item from the cache and from the disk.
+     * @param item
+     */
     private void removeFromCache(CachedItem item) {
         // Try to get a lock and remove the item from the cache.
         // If that fails, give up, because it's in use still
