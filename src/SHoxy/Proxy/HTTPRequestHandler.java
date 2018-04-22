@@ -28,6 +28,7 @@ public class HTTPRequestHandler implements Runnable {
         byte[] rawRequest;
         int requestSize;
         HTTPData clientRequest;
+        HTTPData forwardReply;
 
         try {
             SHoxyUtils.logMessage(String.format("Client connected on port: %d", clientSocket.getPort()));
@@ -41,7 +42,11 @@ public class HTTPRequestHandler implements Runnable {
                 clientRequest = HTTPEncoderDecoder.decodeMessage(rawRequest);
                 if(clientRequest.method.equals("GET")) {
                     SHoxyUtils.logMessage(String.format("Client requests %s", clientRequest.URI));
-                    replyStream.write(get501Packet());
+                    forwardReply = forwardGETRequest(clientRequest.URI);
+                    if (forwardReply != null)
+                        replyStream.write(forwardReply.constructPacket());
+                    else
+                        replyStream.write(get501Packet());
                 }
                 else
                     replyStream.write(get501Packet());
