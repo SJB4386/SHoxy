@@ -1,11 +1,14 @@
 package SHoxy.Cache;
 
 import java.util.Date;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class CachedItem {
     public String URL;
     public Date lastModified;
     public Date lastTimeRequested;
+    
+    private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
 
     /**
      * Parses URL into the filename that is used for storage of the CachedItem
@@ -39,6 +42,10 @@ public class CachedItem {
     	}
     	
         return URLToFileName;
+    }
+    
+    public ReentrantReadWriteLock getLock() {
+        return rwl;
     }
 
 }

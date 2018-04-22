@@ -14,9 +14,17 @@ public class SHoxyProxy {
         // cache doesn't need to be an ArrayList, but it will need to be passed in some
         // way
         // to each thread
-        Thread listenerThread = new Thread(new TCPListener(3081, cache, "cache"));
-        Thread updaterThread = new Thread(new CacheUpdater());
-        Thread cleanerThread = new Thread(new CacheCleaner());
+        
+        int listenerPort = 3081;
+        int updateTimerSeconds = 10;
+        int deleteTimerSeconds = 1000;
+        String cacheDirectory = "cache";
+        // TODO Load config and send values to threads
+
+        
+        Thread listenerThread = new Thread(new TCPListener(listenerPort, cache, cacheDirectory));
+        Thread updaterThread = new Thread(new CacheUpdater(cache, updateTimerSeconds));
+        Thread cleanerThread = new Thread(new CacheCleaner(cache, deleteTimerSeconds));
 
         listenerThread.start();
         updaterThread.start();
