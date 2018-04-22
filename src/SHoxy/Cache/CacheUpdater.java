@@ -62,7 +62,6 @@ public class CacheUpdater implements Runnable {
         StringBuffer rawResponse;
         String responseLine;
         int responseCode;
-        HTTPData response = null;
         
         if (lock.tryLock()) {
             try {
@@ -77,20 +76,13 @@ public class CacheUpdater implements Runnable {
                 
                 
                 if (responseCode == HttpURLConnection.HTTP_OK) {
-                    response = new HTTPData();
-                    response.isReply = true;
-                    response.protocol = SHoxyProxy.HTTP_VERSION;
-                    response.statusCode = "200 OK\r\n";
-                    response.responseCode = responseCode;
                     responseBuffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     rawResponse = new StringBuffer();
                     while ((responseLine = responseBuffer.readLine()) != null)
                         rawResponse.append(responseLine + "\n");
                     responseBuffer.close();
-                    response.body = rawResponse.toString().getBytes();
-                    response.headerLines.put("Content-Length:", String.format("%d\r\n", response.body.length));
                     
-                    SHoxyUtils.writeFile(response.body, CachedItem.parseURLToFileName(item.URL));
+                    SHoxyUtils.writeFile(rawResponse.toString().getBytes(), item.fileLocation);
                 }
                 // if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) or anything else, do nothing
             } catch (MalformedURLException e) {

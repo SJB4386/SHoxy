@@ -68,7 +68,7 @@ public class CacheCleaner implements Runnable {
         // If that fails, give up, because it's in use still
         Lock itemLock = item.getLock();
         if (itemLock.tryLock()) {
-            String fileURL = CachedItem.parseURLToFileName(item.URL);
+            String fileURL = item.fileLocation;
             deleteFile(fileURL);
             cache.remove(item.URL);
             
