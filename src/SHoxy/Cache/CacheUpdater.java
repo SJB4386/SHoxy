@@ -11,8 +11,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
-import SHoxy.HTTP.HTTPData;
-import SHoxy.Proxy.SHoxyProxy;
 import SHoxy.Util.SHoxyUtils;
 
 public class CacheUpdater implements Runnable {
@@ -73,7 +71,6 @@ public class CacheUpdater implements Runnable {
                 connection.setRequestMethod("GET");
                 connection.setIfModifiedSince(item.lastModified.getTime());
                 responseCode = connection.getResponseCode();
-                
                 
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     responseBuffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
