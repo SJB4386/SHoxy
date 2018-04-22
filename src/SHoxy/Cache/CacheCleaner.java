@@ -19,6 +19,7 @@ public class CacheCleaner implements Runnable {
     public CacheCleaner (Map<String, CachedItem> cache, int deleteTimerSeconds) {
         this.cache = cache;
         this.deleteTimerSeconds = deleteTimerSeconds;
+        rand = new Random();
     }
 
     @Override
