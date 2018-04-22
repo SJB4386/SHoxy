@@ -1,6 +1,7 @@
 package SHoxy.Proxy;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import SHoxy.Cache.*;
 
@@ -10,7 +11,7 @@ public class SHoxyProxy {
     private static final String CONFIG_FILE = "SHoxyProxy.config";
 
     public static void main(String[] args) {
-        Map<String, CachedItem> cache = new LinkedHashMap<String, CachedItem>();
+        Map<String, CachedItem> cache = new ConcurrentHashMap<String, CachedItem>();
         // cache doesn't need to be an ArrayList, but it will need to be passed in some
         // way
         // to each thread

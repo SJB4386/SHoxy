@@ -2,8 +2,11 @@ package SHoxy.Proxy;
 
 import static org.junit.Assert.*;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.junit.Test;
 
+import SHoxy.Cache.CachedItem;
 import SHoxy.HTTP.HTTPData;
 
 public class HTTPRequestHandlerTest {
@@ -30,7 +33,7 @@ public class HTTPRequestHandlerTest {
 
     @Test
     public void testForwardGETRequest() {
-        HTTPRequestHandler handler = new HTTPRequestHandler(null, null, null);
+        HTTPRequestHandler handler = new HTTPRequestHandler(null, new ConcurrentHashMap<String, CachedItem>(), "cache");
         HTTPData testHTTP = handler.forwardGETRequest("http://truman.edu");
 
         assertTrue(testHTTP != null);
@@ -38,7 +41,7 @@ public class HTTPRequestHandlerTest {
 
     @Test
     public void testForwardGETRequestNoHttp() {
-        HTTPRequestHandler handler = new HTTPRequestHandler(null, null, null);
+        HTTPRequestHandler handler = new HTTPRequestHandler(null, new ConcurrentHashMap<String, CachedItem>(), "cache");
         HTTPData testHTTP = handler.forwardGETRequest("truman.edu");
 
         assertTrue(testHTTP != null);

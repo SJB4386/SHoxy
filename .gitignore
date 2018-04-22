@@ -5,3 +5,5 @@
 *.gz
 *.pdf
 *.log
+/cache/
+/test/
