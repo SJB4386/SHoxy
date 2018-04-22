@@ -60,7 +60,7 @@ public class HTTPRequestHandler implements Runnable {
                         requestCacheKey = clientRequest.URI.replace("http://", "")
                                 .replace("www.", "");
                         synchronized (cache.get(requestCacheKey)) {
-                            replyStream.write(create200PacketFromCache(requestCacheKey));
+                            replyStream.write(create200Packet(cache.get(requestCacheKey).fileLocation));
                             SHoxyUtils.logMessage(String
                                     .format("Cached document sent to %s", clientIP));
                         }
@@ -103,18 +103,17 @@ public class HTTPRequestHandler implements Runnable {
     }
 
     /**
-     * Creates a HTTP packet from a specified cached document
-     * @param cacheKey the key the document is cached under
+     * Creates a HTTP packet from a locally stored document
+     * @param filename the key the document is stored under
      * @return a packet ready for transport
      */
-    public byte[] create200PacketFromCache(String cacheKey) {
+    public byte[] create200Packet(String filename) {
         HTTPData docHTTP = new HTTPData();
-        String filename = String.format("%s%s", cacheDirectory, CachedItem.parseURLToFileName(cacheKey));
 
         docHTTP.isReply = true;
         docHTTP.protocol = SHoxyProxy.HTTP_VERSION;
         docHTTP.statusCode = "200 OK\r\n";
-        docHTTP.body = SHoxyUtils.retrieveDocument(cacheDirectory + filename);
+        docHTTP.body = SHoxyUtils.retrieveDocument(filename);
         docHTTP.headerLines.put("Content-Length:",
                 String.format("%d\r\n", docHTTP.body.length));
 
@@ -200,6 +199,7 @@ public class HTTPRequestHandler implements Runnable {
                 cache.put(cacheKey, new CachedItem());
                 synchronized (cache.get(cacheKey)) {
                     cache.get(cacheKey).URL = cacheKey;
+                    cache.get(cacheKey).fileLocation = cachedDocFilename;
                     cache.get(cacheKey).lastTimeRequested = new Date();
                     if (lastModifed > 0)
                         cache.get(cacheKey).lastModified = new Date(lastModifed);

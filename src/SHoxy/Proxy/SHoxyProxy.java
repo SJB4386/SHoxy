@@ -16,16 +16,10 @@ public class SHoxyProxy {
 
     public static void main(String[] args) {
         Map<String, CachedItem> cache = new ConcurrentHashMap<String, CachedItem>();
-        // cache doesn't need to be an ArrayList, but it will need to be passed in some
-        // way
-        // to each thread
-        
-        int listenerPort = 3081;
-        int updateTimerSeconds = 10;
-        int deleteTimerSeconds = 1000;
-        String cacheDirectory = "cache";
-        
-        
+        int listenerPort = 0;
+        int updateTimerSeconds = 0;
+        int deleteTimerSeconds = 0;
+        String cacheDirectory = null;
         String[] configValues = {"Listening-Port:", "Update-Timer:",
                                  "Deletion-Timer:", "Cache-Directory:"};
         
@@ -68,6 +62,7 @@ public class SHoxyProxy {
             configReader.close();
         } catch (FileNotFoundException e) {
             SHoxyUtils.logMessage("Config file not found.");
+            System.exit(0);
         }
 
         Thread listenerThread = new Thread(new TCPListener(listenerPort, cache, cacheDirectory));

@@ -8,6 +8,7 @@ public class CachedItem {
     private static String FILENAME_END_IN_FILE_REGEX = ".*\\/.*\\..+$";
 
     public String URL;
+    public String fileLocation;
     public Date lastModified;
     public Date lastTimeRequested;
     
