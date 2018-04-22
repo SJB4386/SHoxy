@@ -32,10 +32,12 @@ public class CacheCleaner implements Runnable {
             while (true) {
                 Thread.sleep(rand.nextInt(30) * milliseconds);
                 cleanOldEntries();
+                scheduleClean();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        
     }
     
     
