@@ -1,10 +1,11 @@
 package SHoxy.Cache;
 
 import java.io.BufferedReader;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -28,7 +29,6 @@ public class CacheUpdater implements Runnable {
 
     @Override
     public void run() {
-        // TODO Auto-generated method stub
         updateCache();
         scheduleCacheUpdate();
     }
@@ -86,7 +86,7 @@ public class CacheUpdater implements Runnable {
                     response.body = rawResponse.toString().getBytes();
                     response.headerLines.put("Content-Length:", String.format("%d\r\n", response.body.length));
                     
-                    writeFile(item.URL, response.body);
+                    SHoxyUtils.writeFile(response.body, CachedItem.parseURLToFileName(item.URL));
                 }
                 // if (responseCode == HttpURLConnection.HTTP_NOT_MODIFIED) or anything else, do nothing
             } catch (MalformedURLException e) {
@@ -97,18 +97,5 @@ public class CacheUpdater implements Runnable {
             
             lock.unlock();
         }
-    }
-        
-    private void writeFile(String url, byte[] contents) {
-        FileOutputStream file = null;
-        try {
-            file = new FileOutputStream(url);
-            file.write(contents);
-            file.flush();
-            file.close();
-        } catch (IOException e) {
-            SHoxyUtils.logMessage(String.format("Failed to write file to %s", url));
-        }
-        
     }
 }
