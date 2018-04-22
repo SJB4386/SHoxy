@@ -1,6 +1,7 @@
 package SHoxy.Cache;
 
 import java.util.Date;
+import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class CachedItem {
@@ -26,7 +27,17 @@ public class CachedItem {
     	 	
 
     	
-    	String[] forwardSlashParts = URLParts[1].split(FORWARD_SLASH_DELIM);
+    	ArrayList <String> forwardSlashParts = new ArrayList();
+    			
+    	try {
+    		for (String URLPart: URLParts[1].split(FORWARD_SLASH_DELIM)) {
+    			forwardSlashParts.add(URLPart);
+    		}
+    	}
+    	catch(ArrayIndexOutOfBoundsException e){
+    		forwardSlashParts.add("");
+    	}
+
     	
     	String PERIOD_DELIM = "\\.";
     	String[] domainParts = URLParts[0].split(PERIOD_DELIM);   	
@@ -36,9 +47,9 @@ public class CachedItem {
     	for(int i = domainParts.length - 1; i != -1; i--) {
     		URLToFileName = URLToFileName + "/" + domainParts[i];
     	}
-    	
-    	for(int j = 0; j < forwardSlashParts.length; j++) {
-    		URLToFileName = URLToFileName + "/" + forwardSlashParts[j];
+
+    	for(int j = 0; j < forwardSlashParts.size(); j++) {
+    		URLToFileName = URLToFileName + "/" + forwardSlashParts.get(j);
     	}
     	
         return URLToFileName;
