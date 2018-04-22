@@ -36,6 +36,7 @@ public class CacheUpdater implements Runnable {
             while (true) {
                 Thread.sleep(updateTimerSeconds * milliseconds);
                 updateCache();
+                scheduleCacheUpdate();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
