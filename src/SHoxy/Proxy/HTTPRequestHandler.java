@@ -124,7 +124,7 @@ public class HTTPRequestHandler implements Runnable {
             connection = (HttpURLConnection) destination.openConnection();
             connection.setRequestMethod("GET");
             responseCode = connection.getResponseCode();
-            if (responseCode == 200) {
+            if (responseCode == HttpURLConnection.HTTP_OK) {
                 response = new HTTPData();
                 response.isReply = true;
                 response.protocol = SHoxyProxy.HTTP_VERSION;
