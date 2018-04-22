@@ -19,6 +19,8 @@ public class HTTPData {
     public String protocol;
     public String statusCode;
 
+    public int responseCode;
+
     public HTTPData() {
         this.isRequest = false;
         this.isReply = false;

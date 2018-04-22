@@ -29,10 +29,11 @@ public class HTTPRequestHandler implements Runnable {
         int requestSize;
         HTTPData clientRequest;
         HTTPData forwardReply;
+        String clientIP = clientSocket.getInetAddress().toString();
 
         try {
-            SHoxyUtils.logMessage(String.format("Client connected on port: %d", clientSocket.getPort()));
-
+            SHoxyUtils.logMessage(String.format("%s connected on port: %d", clientIP,
+                    clientSocket.getPort()));
             requestStream = clientSocket.getInputStream();
             replyStream = clientSocket.getOutputStream();
             requestSize = requestStream.read(requestBuffer);
@@ -40,22 +41,31 @@ public class HTTPRequestHandler implements Runnable {
                 rawRequest = new byte[requestSize];
                 System.arraycopy(requestBuffer, 0, rawRequest, 0, requestSize);
                 clientRequest = HTTPEncoderDecoder.decodeMessage(rawRequest);
-                if(clientRequest.method.equals("GET")) {
-                    SHoxyUtils.logMessage(String.format("Client requests %s", clientRequest.URI));
+                if (clientRequest.method.equals("GET")) {
+                    SHoxyUtils.logMessage(
+                            String.format("%s requests %s", clientIP, clientRequest.URI));
                     forwardReply = forwardGETRequest(clientRequest.URI);
-                    if (forwardReply != null)
+                    if (forwardReply.responseCode == 200) {
                         replyStream.write(forwardReply.constructPacket());
-                    else
+                        SHoxyUtils.logMessage(String.format("200 OK to %s", clientIP));
+                    } else {
                         replyStream.write(get501Packet());
-                }
-                else
+                        SHoxyUtils.logMessage(
+                                String.format("501 Not Implemented to %s, %d not handled",
+                                        clientIP, forwardReply.responseCode));
+                    }
+                } else {
                     replyStream.write(get501Packet());
+                    SHoxyUtils.logMessage(String.format(
+                            "%s request recieved, 501 Not Implemented to %s",
+                            clientRequest.method, clientIP));
+                }
             }
 
             requestStream.close();
             replyStream.close();
         } catch (IOException e) {
-            System.out.println("Error connecting to client");
+            SHoxyUtils.logMessage("Error connecting to client");
         }
     }
 
@@ -119,6 +129,7 @@ public class HTTPRequestHandler implements Runnable {
                 response.isReply = true;
                 response.protocol = SHoxyProxy.HTTP_VERSION;
                 response.statusCode = "200 OK\r\n";
+                response.responseCode = responseCode;
                 responseBuffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 rawResponse = new StringBuffer();
                 while ((responseLine = responseBuffer.readLine()) != null)
@@ -126,6 +137,10 @@ public class HTTPRequestHandler implements Runnable {
                 responseBuffer.close();
                 response.body = rawResponse.toString().getBytes();
                 response.headerLines.put("Content-Length:", String.format("%d\r\n", response.body.length));
+            }
+            else {
+                response = new HTTPData();
+                response.responseCode = responseCode;
             }
         } catch (MalformedURLException e) {
             SHoxyUtils.logMessage(String.format("URL: %s not formatted properly", url));
