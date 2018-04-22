@@ -14,6 +14,7 @@ import SHoxy.Util.SHoxyUtils;
 
 public class HTTPRequestHandler implements Runnable {
     private final static String ERROR_501_FILENAME = "HTTPErrorDocs/501.html";
+    private final static String ERROR_400_FILENAME = "HTTPErrorDocs/400.html";
     private final static int REQUEST_BUFFER_SIZE = 800;
     private final static int HTTP_READ_TIMEOUT = 5000;
     private final static int HTTP_CONNECT_TIMEOUT = 5000;
@@ -66,6 +67,11 @@ public class HTTPRequestHandler implements Runnable {
                             SHoxyUtils.logMessage(String
                                     .format("Cached document sent to %s", clientIP));
                         }
+                    } else if (forwardReply.responseCode == HttpURLConnection.HTTP_BAD_REQUEST) {
+                        replyStream.write(get400Packet());
+                        SHoxyUtils.logMessage(
+                                String.format("400 Bad Request to %s, reply sent to %s",
+                                        clientRequest.URI, clientIP));
                     } else {
                         replyStream.write(get501Packet());
                         SHoxyUtils.logMessage(
@@ -104,6 +110,22 @@ public class HTTPRequestHandler implements Runnable {
         return error501.constructPacket();
     }
 
+    /**
+     * Creates a HTTP packet with a 400 status code
+     * @return the packet ready for transport
+     */
+    public byte[] get400Packet() {
+        HTTPData erro400 = new HTTPData();
+
+        erro400.isReply = true;
+        erro400.protocol = SHoxyProxy.HTTP_VERSION;
+        erro400.statusCode = "400 Bad Request\r\n";
+        erro400.body = SHoxyUtils.retrieveDocument(ERROR_400_FILENAME);
+        erro400.headerLines.put("Content-Length:",
+                String.format("%d\r\n", erro400.body.length));
+
+        return erro400.constructPacket();
+    }
     /**
      * Creates a HTTP packet from a locally stored document
      * @param filename the key the document is stored under
