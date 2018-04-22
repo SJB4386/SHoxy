@@ -41,6 +41,7 @@ public class HTTPRequestHandlerTest {
         HTTPRequestHandler handler = new HTTPRequestHandler(null, null, null);
         HTTPData testHTTP = handler.forwardGETRequest("truman.edu");
 
+        System.out.println(testHTTP.toString());
         assertTrue(testHTTP != null);
     }
 }
