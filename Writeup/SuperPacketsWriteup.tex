@@ -26,12 +26,16 @@
 The SHOXY proxy server works by first initializing a thread that listens for connections and then initializing the threads that handle caching. Then the client must configure their browser settings to work through the SHOXY proxy. The client can then use their browser to reach websites by simply typing a URL into their address bar. The browser then sends the packets meant for the destination server to the SHOXY proxy. 
 
 \subsection{Forwarding a Request to Intended Destination}
-When the proxy receives a request from a client the proxy immediately creates a new thread which handles the logic of the request and goes back to listening for new client requests. The thread first checks to see if the request is HTTP GET which all requests from the client should be. Then the thread checks if the URL has been cached. If there is a cached version of the request then the SHOXY proxy responds back to the client with the cached version of the requested site. If no cached version of the request exists then the SHOXY proxy creates a new request from the forwarding data from the client's original request. This creates a copy of the client request but the header will contain the SHOXY proxy as the sender not the original client. 
+When the SHOXY proxy receives a request from a client the proxy immediately creates a new thread which handles the logic of the request and goes back to listening for new client requests. The thread first checks to see if the request is HTTP GET which all requests from the client should be. Then the thread checks if the URL has been cached. If there is a cached version of the request then the SHOXY proxy responds back to the client with the cached version of the requested site. If no cached version of the request exists then the SHOXY proxy creates a new request from the forwarding data from the client's original request. This creates a copy of the client request but the header will contain the SHOXY proxy as the sender not the original client. 
 
 \subsection{Receiving Server Response}
-The destination server could return a myriad of responses. SHOXY proxy is built to handle HTTP codes 304, 400, and 501. 
+The destination server could return a myriad of responses. SHOXY proxy is built to handle HTTP codes 304, 400, and 501 as well as standard HTTP data that a server provides to HTTP GET requests. If the SHOXY proxy receives a 400 error message then it simply forwards that to the client. Likewise when the SHOXY proxy recieves a 501 error message then it also forwards that to the client. 
+
+If the SHOXY proxy receives HTTP data then the the SHOXY proxy will create a new cached item or update an already created cached item depending on the time last updated portion of the request. 
 
 \subsection{Sending Response Back to the Client}
+The SHOXY proxy sends responses back to the client in a similar manner to how it forwards requests. Once again the SHOXY proxy creates a new response using the client's previously provided socket data. The data requested is then added copied to the response. The client's browser then receives the HTTP data and displays it like a normal webpage.  
+
 
 \section{Caching}
 \section{Code}
