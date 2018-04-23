@@ -6,9 +6,9 @@
 \usepackage{arydshln}
 
 
-\title{Super-Packets High-Availability Cluster Project}
+\title{Simple HTTP Proxy: SHOXY}
 \author{William Johnson, Spencer Berg,  Jonathan Rogers}
-\date{7 March 2018}
+\date{22 April 2018}
 
 \begin{document}
 \maketitle
@@ -29,15 +29,40 @@ The SHOXY proxy server works by first initializing a thread that listens for con
 When the SHOXY proxy receives a request from a client the proxy immediately creates a new thread which handles the logic of the request and goes back to listening for new client requests. The thread first checks to see if the request is HTTP GET which all requests from the client should be. Then the thread checks if the URL has been cached. If there is a cached version of the request then the SHOXY proxy responds back to the client with the cached version of the requested site. If no cached version of the request exists then the SHOXY proxy creates a new request from the forwarding data from the client's original request. This creates a copy of the client request but the header will contain the SHOXY proxy as the sender not the original client. 
 
 \subsection{Receiving Server Response}
-The destination server could return a myriad of responses. SHOXY proxy is built to handle HTTP codes 304, 400, and 501 as well as standard HTTP data that a server provides to HTTP GET requests. If the SHOXY proxy receives a 400 error message then it simply forwards that to the client. Likewise when the SHOXY proxy recieves a 501 error message then it also forwards that to the client. 
+The destination server could return a myriad of responses. SHOXY proxy is built to handle HTTP codes 304, 400, and 501 as well as standard HTTP data or code 200 that a server provides to HTTP GET requests. If the SHOXY proxy receives a 400 error message then it simply forwards that to the client. Likewise when the SHOXY proxy recieves a 501 error message then it also forwards that to the client. 
 
-If the SHOXY proxy receives HTTP data then the the SHOXY proxy will create a new cached item or update an already created cached item depending on the time last updated portion of the request. 
+If the SHOXY proxy receives a code 200 then it takes the data and  then the SHOXY proxy will create a new cached item or update an already created cached item depending on the time last updated portion of the request. 
 
 \subsection{Sending Response Back to the Client}
-The SHOXY proxy sends responses back to the client in a similar manner to how it forwards requests. Once again the SHOXY proxy creates a new response using the client's previously provided socket data. The data requested is then added copied to the response. The client's browser then receives the HTTP data and displays it like a normal webpage.  
+The SHOXY proxy sends responses back to the client in a similar manner to how it forwards requests. Once again the SHOXY proxy creates a new response using the client's previously provided socket data. The data requested is then added copied to the response. The client's browser then receives the code 200 aswell as the relevent data and displays it like a normal webpage.  
 
 
 \section{Caching}
+\subsection{The Cache}
+One responsibility of proxy servers is to handle caching. The SHOXY proxy stores cached data in a hash map where the URL acts both as the path for the stored data as well as the unique map key for each item. Furthermore the cache is where If-Modified-Since and 304 HTTP codes are handled. 
+
+\subsection{Cached Items}
+A SHOXY proxy cache is made up of cached items. A cached item has a URL, a fileLocation, a lastModified Date, and a last Time Requested Date. These fields allow for easy access and maintain time frames which allow for both the cache cleaner and the cache updater to maintain the cache. 
+
+
+\subsection{Creating a New Cached Item}
+When the SHOXY proxy receives a request from a site the cache does a search to determine if the cache needs to be updated. If the cache does need to be updated then a new cached item is created. 
+
+\subsection{Maintiaing the Cache}
+The SHOXY proxy cache also has to be maintained. The two classes which handle this are cache cleaner and cache updater. Cache cleaner uses a thread that periodically checks how long since a cached item has been accessed. If the cached item has not been requested in  a while then it is removed from the cache. 
+
+Cache updater uses a thread to periodically check if a server has updated a version of a cached item by sending an If-Modified-Since request. If the SHOXY cache receives a 200 message then the cache item is replaced with the newer version of the website. Otherwise if the SHOXY cache recieves a 304 message then it does nothing as there are no updates. 
+
+\section{Multithreading}
+
+\section{Team Contributions}
+The whole team met to discuss the SHOXY proxy design, split the task of writing code. 
+The HTTP handling code and multithreading code was written by William.
+The Cached Item was written by Jonathan.
+The Cache Cleaner and Cache Updater were  written by Spencer. 
+The group collectively worked out any flaws found in the others' code.
+
+
 \section{Code}
 
 \begin{tiny}
