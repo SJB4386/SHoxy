@@ -145,7 +145,8 @@ public class HTTPRequestHandler implements Runnable {
     }
 
     /**
-     * Forwards a GET request to a given url
+     * Forwards a GET request to a given url Performs a conditional GET if the file is
+     * determined to be cached. Caches files as need.
      * @param url the url the request is to be sent to
      * @return the response gotten from the GET request as HTTPData
      */

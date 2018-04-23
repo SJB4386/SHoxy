@@ -7,7 +7,7 @@ import java.util.Map;
 import SHoxy.Cache.CachedItem;
 import SHoxy.Util.SHoxyUtils;
 
-public class TCPListener implements Runnable {
+public class RequestListener implements Runnable {
     private int listeningPort;
     private Map<String, CachedItem> cache;
     private String cacheDirectory;
@@ -20,7 +20,7 @@ public class TCPListener implements Runnable {
      * @param cache The files cached
      * @param cacheDirectory The location of the cache
      */
-    public TCPListener(int listeningPort, Map<String, CachedItem> cache, String cacheDirectory) {
+    public RequestListener(int listeningPort, Map<String, CachedItem> cache, String cacheDirectory) {
         this.listeningPort = listeningPort;
         this.cache = cache;
         this.cacheDirectory = cacheDirectory;

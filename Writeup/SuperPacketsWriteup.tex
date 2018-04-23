@@ -54,6 +54,7 @@ The SHOXY proxy cache also has to be maintained. The two classes which handle th
 Cache updater uses a thread to periodically check if a server has updated a version of a cached item by sending an If-Modified-Since request. If the SHOXY cache receives a 200 message then the cache item is replaced with the newer version of the website. Otherwise if the SHOXY cache recieves a 304 message then it does nothing as there are no updates. 
 
 \section{Multithreading}
+There are four types of threads in SHOXY, RequestListener, HTTPRequestHandler, CacheCleaner, and CacheUpdater. Each does what their names imply. RequestListener listens for incomming HTTP request on a particular port, then once it receives one, it immediately creates a HTTPRequestHandler thread that handles intrepreting the request and responding to the client. CacheUpdater updates each item in the cache after a period of time, and CacheCleaner periodically checks every item in the cache and deletes them if they haven't been access for a certain period of time. When any thread accesses an item in the cache, the particular CachedItem is locked so no other thread can make modifications.
 
 \section{Team Contributions}
 The whole team met to discuss the SHOXY proxy design, split the task of writing code. 
@@ -81,7 +82,7 @@ The group collectively worked out any flaws found in the others' code.
 \end{lstinputlisting}
 \begin{lstinputlisting}[language=Java]{../src/SHoxy/Proxy/ShoxyProxy.java}
 \end{lstinputlisting}
-\begin{lstinputlisting}[language=Java]{../src/SHoxy/Proxy/TCPListener.java}
+\begin{lstinputlisting}[language=Java]{../src/SHoxy/Proxy/RequestListener.java}
 \end{lstinputlisting}
 \begin{lstinputlisting}[language=Java]{../src/SHoxy/Util/SHoxyUtils.java}
 \end{lstinputlisting}

@@ -65,7 +65,7 @@ public class SHoxyProxy {
             System.exit(0);
         }
 
-        Thread listenerThread = new Thread(new TCPListener(listenerPort, cache, cacheDirectory));
+        Thread listenerThread = new Thread(new RequestListener(listenerPort, cache, cacheDirectory));
         Thread updaterThread = new Thread(new CacheUpdater(cache, updateTimerSeconds));
         Thread cleanerThread = new Thread(new CacheCleaner(cache, deleteTimerSeconds));
 
