@@ -31,6 +31,9 @@ public class CacheUpdater implements Runnable {
         scheduleCacheUpdate();
     }
 
+    /**
+     * At the interval specified in the config file, try to update all entries in the cache.
+     */
     private void scheduleCacheUpdate() {
         while (true) {
             try {
@@ -53,6 +56,12 @@ public class CacheUpdater implements Runnable {
         
     }
 
+    /**
+     * UpdateCachedItem locks the item and sends an if-Modified-Since request to its URL.
+     * If that sends a 200:OK response, write the updated file to the disk.
+     * If that sends a 304:Not Modified or other response, no action must be taken.
+     * @param item the cached file to update.
+     */
     private void updateCachedItem(CachedItem item) {
         Lock lock = item.getLock();
         URL destination;

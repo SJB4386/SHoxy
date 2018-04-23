@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class CachedItem {
-    private static String FILENAME_END_IN_FILE_REGEX = ".*\\/.*\\..+$";
-
     public String URL;
     public String fileLocation;
     public Date lastModified;
@@ -19,16 +17,12 @@ public class CachedItem {
      * @return The filename the cached item is stored under
      */
     public static String parseURLToFileName(String URL) {
-    	
-    	//TODO consider no file type.
-    	
+    	    	
     	URL = URL.replace("http://", "");
     	URL = URL.replace("www.", "");   	
     	
     	String FORWARD_SLASH_DELIM = "\\/";
     	String[] URLParts = URL.split(FORWARD_SLASH_DELIM,2);
-    	 	
-
     	
     	ArrayList <String> forwardSlashParts = new ArrayList<String>();
     			
