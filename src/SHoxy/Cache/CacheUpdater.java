@@ -42,7 +42,6 @@ public class CacheUpdater implements Runnable {
                 SHoxyUtils.logMessage("CacheUpdater interrupted");
             }
             updateCache();
-            scheduleCacheUpdate();
         }
     }
 

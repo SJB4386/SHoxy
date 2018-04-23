@@ -40,7 +40,6 @@ public class CacheCleaner implements Runnable {
                 SHoxyUtils.logMessage("CacheCleaner interrupted");
             }
             cleanOldEntries();
-            scheduleClean();
         }
     }
     
